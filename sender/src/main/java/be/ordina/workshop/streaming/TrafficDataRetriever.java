@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * @author Tim Ysewyn
+ * @author Tom Van den Bulck
  */
 @Component
 public class TrafficDataRetriever {
@@ -30,6 +30,7 @@ public class TrafficDataRetriever {
 	}
 
 	public Mono<Miv> getTrafficData() {
+		logger.info("Get Traffic Data");
 		return WebClient.create(this.baseUrl)
 				.get().uri("/miv/verkeersdata")
 				.retrieve()
@@ -41,6 +42,7 @@ public class TrafficDataRetriever {
 	private Miv convertToMivObject(String xml) {
 		Miv miv = null;
 		try {
+			logger.info("Will now convert {}", xml);
 			JAXBContext jc = JAXBContext.newInstance("generated.traffic");
 			Unmarshaller um = jc.createUnmarshaller();
 			miv = (Miv) um.unmarshal(new ByteArrayInputStream(xml.getBytes()));
