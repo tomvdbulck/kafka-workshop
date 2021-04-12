@@ -9,6 +9,6 @@ public interface KStreamSink {
 
 	String INPUT = "native-input";
 
-	@Input(INPUT)
+	//@Input(INPUT)
 	KStream<String, TrafficEvent> input();
 }

@@ -34,7 +34,7 @@ public class TrafficEventReceiver {
 
 //	Native Kafka Stream processing
 
-	@StreamListener
+	/**@StreamListener
 	public void consumeEvent(@Input(KStreamSink.INPUT)
 			KStream<String, TrafficEvent> stream) {
 		stream.filter(((key, trafficEvent) -> VehicleClass.CAR == trafficEvent.getVehicleClass()))
@@ -49,6 +49,6 @@ public class TrafficEventReceiver {
 				.mapValues(Average::average)
 				.toStream()
 				.print(Printed.toSysOut());
-	}
+	}*/
 
 }
