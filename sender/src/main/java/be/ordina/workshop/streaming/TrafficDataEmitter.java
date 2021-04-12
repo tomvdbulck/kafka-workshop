@@ -1,9 +1,16 @@
 package be.ordina.workshop.streaming;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+import be.ordina.workshop.streaming.domain.VehicleClass;
 import generated.traffic.Miv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuples;
 
@@ -17,12 +24,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Tim Ysewyn
+ * @author Tom Van den Bulck
  */
 @Component
 @EnableBinding(Source.class)
 @EnableScheduling
 public class TrafficDataEmitter {
+
+	private static final Logger logger = LoggerFactory.getLogger(TrafficDataRetriever.class);
 
 	private final TrafficDataConverter trafficDataConverter = new TrafficDataConverter();
 	private final TrafficDataRetriever trafficDataRetriever;
@@ -35,13 +44,22 @@ public class TrafficDataEmitter {
 
 	@Scheduled(fixedRate = 5_000L)
 	public void sendTrafficEvents() {
+		logger.info("send traffic events");
 		this.getTrafficDataEventsAsList().stream()
 				.map(trafficEvent -> MessageBuilder.withPayload(trafficEvent).build())
 				.forEach(message -> this.source.output().send(message));
 	}
 
 	private List<TrafficEvent> getTrafficDataEventsAsList() {
-		return this.getTrafficDataEvents().collectList().block();
+
+		TrafficEvent trafficEvent = new TrafficEvent(VehicleClass.CAMIONET, 50, 1, 1,
+				"s1", "test sensor", 0, Date.from(Instant.now()), Date.from(Instant.now()),
+				false, false);
+
+		return Collections.singletonList(trafficEvent);
+
+
+		//return this.getTrafficDataEvents().collectList().block();
 	}
 
 	private Flux<TrafficEvent> getTrafficDataEvents() {

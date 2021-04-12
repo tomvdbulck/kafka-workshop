@@ -1,5 +1,6 @@
 package be.ordina.workshop.streaming.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
