@@ -52,14 +52,15 @@ public class TrafficDataEmitter {
 
 	private List<TrafficEvent> getTrafficDataEventsAsList() {
 
-		TrafficEvent trafficEvent = new TrafficEvent(VehicleClass.CAMIONET, 50, 1, 1,
+		/**TrafficEvent trafficEvent = new TrafficEvent(VehicleClass.CAR, 50, 70, 70,
 				"s1", "test sensor", 0, Date.from(Instant.now()), Date.from(Instant.now()),
 				false, false);
 
 		return Collections.singletonList(trafficEvent);
+		 */
 
 
-		//return this.getTrafficDataEvents().collectList().block();
+		return this.getTrafficDataEvents().collectList().block();
 	}
 
 	private Flux<TrafficEvent> getTrafficDataEvents() {
