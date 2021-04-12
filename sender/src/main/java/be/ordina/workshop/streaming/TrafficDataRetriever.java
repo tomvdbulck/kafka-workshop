@@ -2,9 +2,9 @@ package be.ordina.workshop.streaming;
 
 import java.io.ByteArrayInputStream;
 import java.util.Objects;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 import generated.traffic.Miv;
 import org.slf4j.Logger;

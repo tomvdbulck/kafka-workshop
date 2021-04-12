@@ -33,7 +33,7 @@ public class TrafficDataEmitter {
 		this.source = source;
 	}
 
-	@Scheduled(fixedRate = 60_000L)
+	@Scheduled(fixedRate = 5_000L)
 	public void sendTrafficEvents() {
 		this.getTrafficDataEventsAsList().stream()
 				.map(trafficEvent -> MessageBuilder.withPayload(trafficEvent).build())
