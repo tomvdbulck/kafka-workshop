@@ -22,10 +22,14 @@
 	</properties>
 
 	<dependencies>
+
+		<!--lab 3 - add my dependency -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
 		</dependency>
+
+		<!--lab 4 - add my dependency -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka-streams</artifactId>
