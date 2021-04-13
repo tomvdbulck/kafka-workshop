@@ -3,11 +3,7 @@ package be.ordina.workshop.streaming;
 import be.ordina.workshop.streaming.domain.TrafficEvent;
 import be.ordina.workshop.streaming.domain.VehicleClass;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.Printed;
-import org.apache.kafka.streams.kstream.Serialized;
-import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.kstream.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,26 +15,33 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Component;
 
 @Component
+//lab3 and lab4: add something over here
 @EnableBinding({ Sink.class, KStreamSink.class })
 public class TrafficEventReceiver {
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(TrafficEventReceiver.class);
 
-//	Spring Cloud Stream processing
+	//lab3: consume events
 	@StreamListener(Sink.INPUT)
 	public void consumeEvent(TrafficEvent event) {
 		logger.info("Received event: {}", event);
 	}
 
-//	Native Kafka Stream processing
+	//lab 4: Native Kafka Stream processing
 	@StreamListener
-	public void consumeEvent(@Input(KStreamSink.INPUT)
-			KStream<String, TrafficEvent> stream) {
+	public void consumeEvent(@Input(KStreamSink.INPUT) KStream<String, TrafficEvent> stream) {
+		//lab 4:
+		// - determine key
+		// - group on this key: think about serialization
+		// - use aggregate function with helper class: Average.java
+		// - map
+		// - print output
+
 		stream.filter(((key, trafficEvent) -> VehicleClass.CAR == trafficEvent.getVehicleClass()))
 				.selectKey((key, value) -> value.getSensorId())
-				.groupByKey(Serialized.with(Serdes.String(), new JsonSerde<>(TrafficEvent.class)))
-				.windowedBy(TimeWindows.of(10_000L))
+				.groupByKey(Grouped.with(Serdes.String(), new JsonSerde<>(TrafficEvent.class)))
+				.windowedBy(TimeWindows.of(120_000L))
 				.aggregate(Average::new, (sensorId, trafficEvent, average) -> {
 					average.addSpeed(trafficEvent.getTrafficIntensity(),
 							trafficEvent.getVehicleSpeedCalculated());
