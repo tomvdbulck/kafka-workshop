@@ -3,21 +3,16 @@ package be.ordina.workshop.streaming;
 import be.ordina.workshop.streaming.domain.TrafficEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.stereotype.Component;
 
 @Component
-//lab3 and lab4: add something over here
-@EnableBinding({ Sink.class})
+//lab 3 and lab4: add something over here
 public class TrafficEventReceiver {
 
 	private static final Logger logger =
 			LoggerFactory.getLogger(TrafficEventReceiver.class);
 
-	//lab3: consume events
-	@StreamListener(Sink.INPUT)
+	//lab 3: consume events
 	public void consumeEvent(TrafficEvent event) {
 		logger.info("Received event: {}", event);
 	}
