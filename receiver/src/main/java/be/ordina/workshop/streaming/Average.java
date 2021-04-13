@@ -28,7 +28,7 @@ public class Average {
 
 	void addSpeed(int amountOfCars, int speed) {
 		this.amountOfCars += amountOfCars;
-		this.totalSpeed += speed;
+		this.totalSpeed += (speed*amountOfCars);
 	}
 
 	double average() {

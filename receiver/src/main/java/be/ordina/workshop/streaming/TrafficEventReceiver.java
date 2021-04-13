@@ -40,7 +40,7 @@ public class TrafficEventReceiver {
 		stream.filter(((key, trafficEvent) -> VehicleClass.CAR == trafficEvent.getVehicleClass()))
 				.selectKey((key, value) -> value.getSensorId())
 				.groupByKey(Serialized.with(Serdes.String(), new JsonSerde<>(TrafficEvent.class)))
-				.windowedBy(TimeWindows.of(120_000L))
+				.windowedBy(TimeWindows.of(10_000L))
 				.aggregate(Average::new, (sensorId, trafficEvent, average) -> {
 					average.addSpeed(trafficEvent.getTrafficIntensity(),
 							trafficEvent.getVehicleSpeedCalculated());
