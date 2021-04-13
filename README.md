@@ -2,7 +2,16 @@
 
 ## Get Started
 1. Use java 8
-2. Get the following [command](http://bit.ly/docker-kafka) so you can get a kafka / zookeeper running locally via docker.
+2. Execute the following commands
+```
+  > docker network create kafka
+  > docker run -d --net=kafka --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 confluentinc/cp-zookeeper:6.1.1
+  > docker run -d --net=kafka --name=kafka -p 9092:9092 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 confluentinc/cp-kafka:6.1.1
+  > docker ps
+
+```
+
+
 3. Use maven build to generate some java classes:
 ```
   > mvn clean compile

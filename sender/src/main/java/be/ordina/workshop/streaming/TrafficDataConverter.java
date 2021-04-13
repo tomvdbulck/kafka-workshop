@@ -9,7 +9,7 @@ import generated.traffic.Miv;
 import reactor.util.function.Tuple2;
 
 /**
- * @author Tim Ysewyn
+ * @author Tom Van den Bulck
  */
 class TrafficDataConverter {
 
