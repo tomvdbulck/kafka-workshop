@@ -4,9 +4,6 @@ import be.ordina.workshop.streaming.domain.TrafficEvent;
 import be.ordina.workshop.streaming.domain.VehicleClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -21,7 +18,6 @@ import java.util.Random;
  */
 @Component
 //lab 2: add something over here
-@EnableBinding(Source.class)
 @EnableScheduling
 public class TrafficDataEmitter {
 
@@ -31,20 +27,11 @@ public class TrafficDataEmitter {
 	//private final TrafficDataRetriever trafficDataRetriever;
 
 	//lab 2: create a constructor and inject something over here
-	private final Source source;
-
-	public TrafficDataEmitter(Source source) {
-		//this.trafficDataRetriever = trafficDataRetriever;
-		this.source = source;
-	}
 
 	@Scheduled(fixedRate = 60_000L)
 	public void sendTrafficEvents() {
 		logger.info("send traffic events");
 		//lab 2: send out the events
-		this.getTrafficDataEventsAsList().stream()
-				.map(trafficEvent -> MessageBuilder.withPayload(trafficEvent).build())
-				.forEach(message -> this.source.output().send(message));
 	}
 
 	private List<TrafficEvent> getTrafficDataEventsAsList() {

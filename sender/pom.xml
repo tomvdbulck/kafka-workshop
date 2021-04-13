@@ -33,10 +33,6 @@
 		</dependency>
 
 		<!--lab 2 - add my dependency -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
-		</dependency>
 
 		<!-- TEST -->
 		<dependency>

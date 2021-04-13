@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-//lab 3 and lab4: add something over here
+//lab 3 and lab 4: add something over here
 public class TrafficEventReceiver {
 
 	private static final Logger logger =
