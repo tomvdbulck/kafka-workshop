@@ -2,9 +2,7 @@ package be.ordina.workshop.streaming;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import be.ordina.workshop.streaming.domain.VehicleClass;
@@ -52,15 +50,52 @@ public class TrafficDataEmitter {
 
 	private List<TrafficEvent> getTrafficDataEventsAsList() {
 
-		/**TrafficEvent trafficEvent = new TrafficEvent(VehicleClass.CAR, 50, 70, 70,
-				"s1", "test sensor", 0, Date.from(Instant.now()), Date.from(Instant.now()),
-				false, false);
+		List<TrafficEvent> randomTrafficEvents = new ArrayList<>();
 
-		return Collections.singletonList(trafficEvent);
-		 */
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.CAR, 1, 50, 80, 150
+				, "s1", "E19 Mechelen Noord Left Lane", new Date(), new Date()));
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.TRUCK_OR_BUS, 0, 0, 80, 90
+				, "s1", "E19 Mechelen Noord Left Lane", new Date(), new Date()));
+
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.CAR, 10, 80, 60, 130
+				, "s2", "E19 Mechelen Noord Center Lane", new Date(), new Date()));
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.TRUCK_OR_BUS, 2, 4, 50, 90
+				, "s2", "E19 Mechelen Noord Center Lane", new Date(), new Date()));
+
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.CAR, 100, 500, 10, 125
+				, "s3", "E19 Mechelen Noord Right", new Date(), new Date()));
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.TRUCK_OR_BUS, 5, 50, 10, 90
+				, "s3", "E19 Mechelen Noord Right", new Date(), new Date()));
 
 
-		return this.getTrafficDataEvents().collectList().block();
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.CAR, 1, 50, 80, 150
+				, "s11", "E19 Mechelen Zuid Left Lane", new Date(), new Date()));
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.TRUCK_OR_BUS, 0, 0, 80, 90
+				, "s11", "E19 Mechelen Zuid Left Lane", new Date(), new Date()));
+
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.CAR, 10, 80, 60, 130
+				, "s12", "E19 Mechelen Zuid Center Lane", new Date(), new Date()));
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.TRUCK_OR_BUS, 2, 4, 50, 90
+				, "s12", "E19 Mechelen Zuid Center Lane", new Date(), new Date()));
+
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.CAR, 100, 500, 10, 125
+				, "s13", "E19 Mechelen Zuid Right", new Date(), new Date()));
+		randomTrafficEvents.add(createTrafficEvent(VehicleClass.TRUCK_OR_BUS, 5, 50, 10, 90
+				, "s13", "E19 Mechelen Zuid Right", new Date(), new Date()));
+
+
+		return randomTrafficEvents;
+	}
+
+	private TrafficEvent createTrafficEvent(VehicleClass vehicleClass, int trafficIntensityMin, int trafficIntensityMax, int vehicleSpeedCalculatedMin, int vehicleSpeedCalculatedMax
+			, String sensorId, String sensorDescription, Date timeRegistration, Date lastUpdated) {
+
+		Random random = new Random();
+		int trafficIntensityCalculated = random.nextInt((trafficIntensityMax - trafficIntensityMin)+1) + trafficIntensityMin;
+		int vehicleSpeedCalculated = random.nextInt((vehicleSpeedCalculatedMax - vehicleSpeedCalculatedMin)+1) + vehicleSpeedCalculatedMin;
+
+		return new TrafficEvent(vehicleClass, trafficIntensityCalculated, vehicleSpeedCalculated, vehicleSpeedCalculated,
+				sensorId, sensorDescription, 0, timeRegistration, lastUpdated, false, false);
 	}
 
 	private Flux<TrafficEvent> getTrafficDataEvents() {
