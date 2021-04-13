@@ -27,13 +27,12 @@ public class TrafficDataEmitter {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrafficDataRetriever.class);
 
-	private final TrafficDataConverter trafficDataConverter = new TrafficDataConverter();
+	//private final TrafficDataConverter trafficDataConverter = new TrafficDataConverter();
 	//private final TrafficDataRetriever trafficDataRetriever;
 
-	//lab 2:
+	//lab 2: create a constructor and inject something over here
 	private final Source source;
 
-	//lab 2:
 	public TrafficDataEmitter(Source source) {
 		//this.trafficDataRetriever = trafficDataRetriever;
 		this.source = source;
