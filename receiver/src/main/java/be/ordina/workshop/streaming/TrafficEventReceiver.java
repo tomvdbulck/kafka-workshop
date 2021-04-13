@@ -26,14 +26,12 @@ public class TrafficEventReceiver {
 			LoggerFactory.getLogger(TrafficEventReceiver.class);
 
 //	Spring Cloud Stream processing
-
 	@StreamListener(Sink.INPUT)
 	public void consumeEvent(TrafficEvent event) {
 		logger.info("Received event: {}", event);
 	}
 
 //	Native Kafka Stream processing
-
 	@StreamListener
 	public void consumeEvent(@Input(KStreamSink.INPUT)
 			KStream<String, TrafficEvent> stream) {
