@@ -1,7 +1,7 @@
 # stream-processing-workshop
 
 ## Get Started
-1. Use java 8
+1. Use java 11
 2. Execute the following commands
 ```
   > docker network create kafka
@@ -21,7 +21,7 @@
 You can get kafka and run it locally
 
 Go to the kafka [quickstart](https://kafka.apache.org/quickstart):
-1. Download the [latest](https://www.apache.org/dyn/closer.cgi?path=/kafka/2.3.0/kafka_2.12-2.3.0.tgz)
+1. Download the [latest](https://www.apache.org/dyn/closer.cgi?path=/kafka/2.7.0/kafka_2.13-2.7.0.tgz)
 2. Start Zookeeper (Kafka provides you with a single node zookeeper instance)
 ```
   > bin/zookeeper-server-start.sh config/zookeeper.properties
@@ -36,17 +36,21 @@ These are also the ports used by default by Spring Cloud Stream
 
 ## Labs
 
+### Lab 1: console commands
+[Console Commands](lab1.md)
+
+
 ### Lab 2: send events to Kafka
-[Send Events to Kafka](lab1.md)
+[Send Events to Kafka](lab2.md)
 
 ### Lab 3: consume events from Kafka
-[Consume Events from Kafka](lab2.md)
+[Consume Events from Kafka](lab3.md)
 
 ### Lab 4a: use Kafka Streams, stateless
-[Use Kafka Streams, stateless](lab3.md)
+[Use Kafka Streams, stateless](lab4a.md)
 
 ### Lab 4b: make use of windows
-[Use Windows with Kafka Streams](lab4.md)
+[Use Windows with Kafka Streams](lab4b.md)
 
 ### Lab 5: Think about how you would detect a traffic congestion
 Think about how you would tackle the problem.
