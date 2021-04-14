@@ -1,27 +1,43 @@
-### Lab 2: consume events from Kafka
+### Lab 1: send events to Kafka
 #### Goal
-With this exercise we will let you consume your first messages from Kafka by making use of Spring Cloud Stream.
-This is the most basic form of stream processing, your method will be called for every event present on the topic.
-Events will only be consumed from the moment the consumer connected first to your Kafka (at that moment it will register its consumer offset)
-So if you do not see immediate results ... wait a minute.
+
+In this first exercise we will take in the traffic data every minute.
+That data will be chopped into events by the existing, provided code.
+After which you will have to put these new events onto a kafka topic `traffic-data`.
+
+For this we will make use of Spring Cloud Stream.
 
 #### Exercise
 
-For this exercise we're going to visit <a href="https://start.spring.io" target="_blank">start.spring.io</a>.
-You can configure anything you want, but just make sure that you add `Cloud Stream` and `Spring for Apache Kafka` as dependencies to your project.
-Once you hit generate a new project will be created, zipped and downloaded to your computer.
-Make sure not to delete the zip file if you want to create separate applications for the next labs.
+We've already set up a project named `sender` which will read the data from the available HTTP endpoint, and convert it to the proper events.
+In order to be able to connect to Kafka and send the events to the topic we'll need to do a couple of things first.
 
-To make it easier, you might want to copy the `be.ordina.workshop.streaming.domain` package from the `sender` application to quickly bootstrap this exercise.
+Let's start by adding the mandatory dependencies to the pom.xml file which is `spring-cloud-starter-stream-kafka`.
 
-Next, let's start with a new `@Component` class named `TrafficEventReceiver`.
-Like with the previous exercise we need to have a binding to our Kafka instance.
-The only difference here is that we're going to use the `org.springframework.cloud.stream.messaging.Sink` interface because we're going to consume the messages.
+Next up we'll need to enable the binding from our application to the Kafka broker.
+Remember that our application is the source of the events, so we'll use the provided `org.springframework.cloud.stream.messaging.Source` interface towards Kafka.
+To enable this binding we'll have to use the `@EnableBinding(Source.class)` annotation which you can add to one of the configuration classes or the `TrafficDataEmitter` component.
 
-This interface will have an `input` channel which we will use to receive the messages from the Kafka topic.
-Create a new configuration file so we can specify which topic needs to be bound to the `input` channel.
-Just add `spring.cloud.stream.bindings.input.destination=traffic-data` to it so everything is configured and we can focus on our code again!
+Because the exposed data is being refreshed every minute, we'll make use of the scheduling mechanism with a fixed rate of 60 seconds.
+You can find the following method in the `TrafficDataEmitter` component.
+```
+@Scheduled(fixedRate = 60_000L)
+public void sendTrafficEvents() {
+}
+```
 
-Let's create a new method which will take a `TrafficEvent` as argument.
-By annotating this method with `@StreamListener(Sink.INPUT)` you're wiring the `input` channel to this method so that it can process every event that the application gets from the Kafka topic.
-To test this you can just log the `TrafficEvent` to stdout.
+Remember that `Source` interface we used for the binding?
+We need to adapt the constructor of our `TrafficDataEmitter` class so a `Source` bean is being injected.
+Once we have this bean injected we'll be able to send events using its `output` channel.
+This `output` channel is our internal application channel which will be bound to our Kafka topic.
+
+To do this we'll have to specify in our properties file where we want to have our `output` channel bind to.
+Just add `spring.cloud.stream.bindings.output.destination=traffic-data` and we're ready to send the events!
+
+The only thing to do now is to create the actual implementation of the `sendTrafficEvents` method:
+```
+this.getTrafficDataEventsAsList().stream()
+    .map(trafficEvent -> MessageBuilder.withPayload(trafficEvent).build())
+	.forEach(message -> this.source.output().send(message));
+```
+In the code above we're going to convert our list of events to a stream and map every event to a Spring Integration `Message`, so we can send the message to our `output` channel.

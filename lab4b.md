@@ -7,7 +7,7 @@ Also it allows you to get a more weighted result as it allows you to average out
 
 #### Exercise
 
-For this exercise we're going to continue from lab3.
+For this exercise we're going to continue from lab4a.
 
 We will be generating an average speed for a given sensor, so first define a result class which will be used to store the results per window.
 

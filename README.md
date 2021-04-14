@@ -36,16 +36,16 @@ These are also the ports used by default by Spring Cloud Stream
 
 ## Labs
 
-### Lab 1: send events to Kafka
+### Lab 2: send events to Kafka
 [Send Events to Kafka](lab1.md)
 
-### Lab 2: consume events from Kafka
+### Lab 3: consume events from Kafka
 [Consume Events from Kafka](lab2.md)
 
-### Lab 3: use Kafka Streams, stateless
+### Lab 4a: use Kafka Streams, stateless
 [Use Kafka Streams, stateless](lab3.md)
 
-### Lab 4: make use of windows
+### Lab 4b: make use of windows
 [Use Windows with Kafka Streams](lab4.md)
 
 ### Lab 5: Think about how you would detect a traffic congestion
