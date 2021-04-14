@@ -114,12 +114,25 @@ If you now start to produce messages to that topic you will see that these will 
 
 ## See the status of the various consumer-groups using your kafka.
 
+Lets create a consumer with a group id.
+
+```
+ > ./kafka-console-consumer --topic test-topic --bootstrap-server localhost:9092 --from-beginning --consumer-property group.id=test1
+
+```
+
 See the status of the consumers - now this will not show you much, however as soon as you start using the Spring Boot projects it will show you more info:
 
 ```
   > ./kafka-consumer-groups --bootstrap-server localhost:9092 --all-groups --describe
   
 ```
+For a specific group:
+```
+  > ./kafka-consumer-groups --bootstrap-server localhost:9092 --group test1 --describe
+```
+
+
 
 
 
