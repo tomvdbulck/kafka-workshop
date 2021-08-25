@@ -2,39 +2,71 @@ package be.ordina.workshop.streaming;
 
 import be.ordina.workshop.streaming.domain.TrafficEvent;
 import be.ordina.workshop.streaming.domain.VehicleClass;
+import generated.traffic.Miv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.util.function.Tuples;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 /**
  * @author Tom Van den Bulck
  */
 @Component
 //lab 2: add something over here
+@EnableBinding(Source.class)
 @EnableScheduling
 public class TrafficDataEmitter {
 
 	private static final Logger logger = LoggerFactory.getLogger(TrafficDataRetriever.class);
 
-	//private final TrafficDataConverter trafficDataConverter = new TrafficDataConverter();
-	//private final TrafficDataRetriever trafficDataRetriever;
+	private final TrafficDataConverter trafficDataConverter = new TrafficDataConverter();
+	private final TrafficDataRetriever trafficDataRetriever;
+
+	private final Source source;
 
 	//lab 2: create a constructor and inject something over here
+	public TrafficDataEmitter(TrafficDataRetriever trafficDataRetriever, Source source) {
+		this.trafficDataRetriever = trafficDataRetriever;
+		this.source = source;
+	}
 
 	@Scheduled(fixedRate = 60_000L)
 	public void sendTrafficEvents() {
 		logger.info("send traffic events");
 		//lab 2: send out the events
+		this.getTrafficDataEventsAsList().stream()
+				.map(trafficEvent -> MessageBuilder.withPayload(trafficEvent).build())
+				.forEach(message -> this.source.output().send(message));
 	}
 
 	private List<TrafficEvent> getTrafficDataEventsAsList() {
+		return this.getTrafficDataEvents().collectList().block();
+	}
+
+
+	private Flux<TrafficEvent> getTrafficDataEvents() {
+		return this.trafficDataRetriever.getTrafficData()
+				.map(Miv::getMeetpunt)
+				.flatMapIterable(Function.identity())
+				.flatMap(meetpunt ->
+						Flux.fromStream(meetpunt.getMeetdata().stream()
+								.map(meetdata -> Tuples.of(meetpunt, meetdata))))
+				.map(trafficDataConverter::convertToTrafficEvent);
+	}
+
+	private List<TrafficEvent> getTrafficDataEventsAsList2() {
 
 		List<TrafficEvent> randomTrafficEvents = new ArrayList<>();
 
@@ -83,18 +115,5 @@ public class TrafficDataEmitter {
 		return new TrafficEvent(vehicleClass, trafficIntensityCalculated, vehicleSpeedCalculated, vehicleSpeedCalculated,
 				sensorId, sensorDescription, 0, timeRegistration, lastUpdated, false, false);
 	}
-
-	/** I no longer work because MIV meetpunt data is no longer working :-(
-	 *
-	 * private Flux<TrafficEvent> getTrafficDataEvents() {
-		return this.trafficDataRetriever.getTrafficData()
-				.map(Miv::getMeetpunt)
-				.flatMapIterable(Function.identity())
-				.flatMap(meetpunt ->
-					Flux.fromStream(meetpunt.getMeetdata().stream()
-							.map(meetdata -> Tuples.of(meetpunt, meetdata))))
-				.map(trafficDataConverter::convertToTrafficEvent);
-	}
-	 */
 
 }

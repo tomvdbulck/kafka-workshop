@@ -33,6 +33,10 @@
 		</dependency>
 
 		<!--lab 2 - add my dependency -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+		</dependency>
 
 		<!-- TEST -->
 		<dependency>
@@ -51,6 +55,12 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>3.0.0</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
+			<version>2.0.0-RC3</version>
 		</dependency>
 	</dependencies>
 

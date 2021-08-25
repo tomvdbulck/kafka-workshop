@@ -9,6 +9,7 @@ import jakarta.xml.bind.Unmarshaller;
 import generated.traffic.Miv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,17 @@ public class TrafficDataRetriever {
 
 	public Mono<Miv> getTrafficData() {
 		logger.info("Get Traffic Data");
-		return WebClient.create(this.baseUrl)
+
+		WebClient webClient = WebClient.builder()
+			.exchangeStrategies(ExchangeStrategies.builder()
+				.codecs(configurer -> configurer
+						.defaultCodecs()
+						.maxInMemorySize(16 * 1024 * 1024))
+				.build())
+				.baseUrl(this.baseUrl)
+			.build();
+
+		return webClient
 				.get().uri("/miv/verkeersdata")
 				.retrieve()
 				.bodyToMono(String.class)
