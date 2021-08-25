@@ -40,10 +40,13 @@ To be able to use the `KStream<String, TrafficEvent>` input channel we need to c
 spring.cloud.stream.bindings.native-input.binder=kstream
 ```
 Subsequently you will also need to provide some properties so both the binders can find the kafka broker.
+Having multiple binders is somewhat of an anti-pattern for Spring Cloud Stream, but easier for a hands-on.
 
 ```
+spring.cloud.stream.binders.kafka.type=kafka
 spring.cloud.stream.binders.kafka.environment.spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
 
+spring.cloud.stream.binders.kstream.type=kstream
 spring.cloud.stream.binders.kstream.environment.spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
 ```
 
