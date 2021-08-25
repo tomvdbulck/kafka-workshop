@@ -29,6 +29,7 @@
 			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
 		</dependency>
 
+
 		<!--lab 4 - add my dependency -->
 
 		<dependency>
