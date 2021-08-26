@@ -2,15 +2,18 @@ package be.ordina.workshop.streaming;
 
 import be.ordina.workshop.streaming.domain.TrafficEvent;
 import be.ordina.workshop.streaming.domain.VehicleClass;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Printed;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.kstream.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 @Component
 //lab 3 and lab 4: add something over here
@@ -34,23 +37,27 @@ public class TrafficEventReceiver {
 		//logger.info("Received event: {}", event);
 	}
 
+	//@StreamListener
+	//public void consumeEvent(@Input(KStreamSink.INPUT) KStream<String, TrafficEvent> stream) {
+	//	stream.filter(((key, trafficEvent) -> VehicleClass.CAR == trafficEvent.getVehicleClass()))
+	//			.print(Printed.toSysOut());
+	//}
+
 	@StreamListener
 	public void consumeEvent(@Input(KStreamSink.INPUT) KStream<String, TrafficEvent> stream) {
 		stream.filter(((key, trafficEvent) -> VehicleClass.CAR == trafficEvent.getVehicleClass()))
+				.selectKey((key, value) -> value.getSensorId())
+				.groupByKey(Grouped.with(Serdes.String(), new JsonSerde<>(TrafficEvent.class)))
+				.windowedBy(TimeWindows.of(Duration.ofMinutes(2L)))
+				.aggregate(Average::new, (sensorId, trafficEvent, average) -> {
+					average.addSpeed(trafficEvent.getTrafficIntensity(),
+							trafficEvent.getVehicleSpeedCalculated());
+					return average;
+				}, Materialized.with(Serdes.String(), new JsonSerde<>(Average.class)))
+				.mapValues(Average::average)
+				.toStream()
+
 				.print(Printed.toSysOut());
-	}
-
-	//lab 4: Native Kafka Stream processing
-	public void consumeEvent() {
-		//lab 4:
-		// - take in a stream
-		// - only process VehicleClass.CAR
-		// - determine key
-		// - group on this key: think about serialization
-		// - use aggregate function with helper class: Average.java
-		// - map
-		// - print output
-
 	}
 
 }
