@@ -11,7 +11,7 @@
 2. You are now in the shell of your docker container
 
 ```
-  > cd /
+  > cd /bin
   > ls
 ```
 
