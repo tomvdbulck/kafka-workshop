@@ -51,7 +51,7 @@ Open a new shell to start the consumer :
   > docker ps
   > docker exec -it kafka /bin/bash
 
-  > cd /
+  > cd /bin
   > ls
 ```
 
